@@ -1,0 +1,5 @@
+# Paths for Met Office data on disk.
+
+ERA5lowres: "/gws/nopw/j04/mohc_shared/dscop/weatherbench/5.625deg/"
+MOGLOBAL:   "/gws/nopw/j04/mohc_shared/dscop/mo_pet_site_archive/mo_global/"
+MOUKV:      "/gws/nopw/j04/mohc_shared/dscop/mo_pet_site_archive/mo_ukv/"

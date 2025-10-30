@@ -1,0 +1,5 @@
+# Paths for Met Office data on disk.
+
+ERA5lowres: "/gws/ssde/j25a/mmh_storage/theme3/weatherbench/5.625deg/"
+MOGLOBAL:   "/gws/ssde/j25a/mmh_storage/theme3/mo_pet_site_archive/mo_global/"
+MOUKV:      "/gws/ssde/j25a/mmh_storage/theme3/mo_pet_site_archive/mo_ukv/"
