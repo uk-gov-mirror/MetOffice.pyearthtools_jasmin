@@ -9,6 +9,11 @@ Met Office specific Indexes
 | [ERA5][site_archive_jasmin.ERA5lowres]   | ECWMF ReAnalysis v5 WeatherBench Low Res       |
 | [MOGLOBAL][site_archive_jasmin.MOGLOBAL] | Subset of Met Office Global Analysis Data      |
 | [MOUKV][site_archive_jasmin.MOUKV]       | Subset of Met Office UKV Analysis Data         |
+| [BARRA_V2][site_archive_nci.BARRA_V2]        | Bureau of meteorology Atmospheric high-resolution Regional Reanalysis for Australia v2 |
+| [Himawari][site_archive_nci.Himawari]        | Himawari 8/9 satellite data                             |
+| [Rainfields3][site_archive_nci._Rainfields3] | Rainfields3 Australia-wide radar mosiac 2km^2 (Ausm310) |
+
+
 """
 
 import os
@@ -30,6 +35,9 @@ import site_archive_jasmin  # noqa
 
 from site_archive_jasmin.ERA5lowres import ERA5lowres  # noqa
 from site_archive_jasmin.MOGLOBAL import MOGLOBAL  # noqa
+from site_archive_jasmin.MOUKV import MOUKV  # noqa
+from site_archive_jasmin.Himawari import MOUKV  # noqa
+from site_archive_jasmin.MOUKV import MOUKV  # noqa
 from site_archive_jasmin.MOUKV import MOUKV  # noqa
 
 register_archive("jasmin")(site_archive_jasmin)
