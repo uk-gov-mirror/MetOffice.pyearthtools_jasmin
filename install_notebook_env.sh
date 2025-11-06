@@ -1,3 +1,6 @@
+# (C) British Crown Copyright 2017-2025, Met Office.
+# Please see LICENSE.md for license details.
+
 # this scriipt shows how to set up a venv for running pyearthtools through a notebook on the JASMIN compute cluster. Conda environments do not work with the JASMIN notebook service, so we can't have a c entral install at this time, so each person need to set up their own env.
 
 #this should be run from a terminal started from jupyterhub
