@@ -24,7 +24,7 @@ from pyearthtools.data.archive import register_archive
 from pyearthtools.data.indexes import ArchiveIndex
 from pyearthtools.data.time import Petdt as petdt
 
-from site_archive_nci.utilities import check_project
+from site_archive_jasmin.utilities import check_project
 
 #: TODO: unused in this module - assumed to be used in tutorials.
 SINGLE_RADAR_VARIABLES = ["RAIN", "DBZH"]

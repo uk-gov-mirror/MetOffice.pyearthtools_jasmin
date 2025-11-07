@@ -3,8 +3,7 @@
 ERA5lowres: "/gws/nopw/j04/mohc_shared/dscop/weatherbench/5.625deg/"
 MOGLOBAL:   "/gws/nopw/j04/mohc_shared/dscop/mo_pet_site_archive/mo_global/"
 MOUKV:      "/gws/nopw/j04/mohc_shared/dscop/mo_pet_site_archive/mo_ukv/"
-Himawari:  "/gws/nopw/j04/mohc_shared/rv74_himawari"
-HimawariChannels: "/gws/nopw/j04/mohc_shared/ra22_himawari"
-BARRA_V2: "/gws/nopw/j04/mohc_shared/rq0_rainfields_prcp_crate"
-Rainfields3: "/gws/nopw/j04/mohc_shared/ob53_barra2"
+Himawari:  "/gws/nopw/j04/mohc_shared/mh_pet/rv74_himawari"
+HimawariChannels: "/gws/nopw/j04/mohc_shared/mh_pet/ra22_himawari"
+Rainfields3: "/gws/nopw/j04/mohc_shared/mh_pet/ob53_barra2"
 

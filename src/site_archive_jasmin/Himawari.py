@@ -21,7 +21,7 @@ from pyearthtools.data.indexes import ArchiveIndex, decorators
 from pyearthtools.data.transforms import Transform, TransformCollection
 from pyearthtools.data.archive import register_archive
 
-from site_archive_nci.utilities import check_project
+from site_archive_jasmin.utilities import check_project
 
 SATELLITE_PATTERN = "{ROOT_DIR}/{FILE_DATE}/{FILE}"
 FILE_REGEX = "*{date_info}*{time_info}*.nc"
@@ -34,14 +34,6 @@ VALID_BANDS = [
 ]
 
 RESOLUTIONS = {"B03": 500, "B01": 1000, "B02": 1000}
-
-ANC_FILENAME = "/g/data/ra22/satellite-products/arc/obs/himawari-ahi/fldk/latest/ancillary"
-
-
-# 'GEOM_SOLAR-PRJ_GEOS141_1000-HIMAWARI9-AHI.nc
-# 'GEOM_SOLAR-PRJ_GEOS141_2000-HIMAWARI9-AHI.nc
-# 'GEOM_SOLAR-PRJ_GEOS141_500-HIMAWARI9-AHI.nc
-
 
 def check_resolution(bands: list[str]):
     # default_res = 2000
@@ -85,8 +77,6 @@ class Himawari(ArchiveIndex):
             transforms (Transform | TransformCollection, optional):
                 Base Transforms to apply. Defaults to TransformCollection().
         """
-        check_project(project_code="rv74")
-
         variables = [variables] if isinstance(variables, str) else variables
 
         self.variables = variables
