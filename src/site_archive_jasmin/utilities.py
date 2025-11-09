@@ -1,7 +1,7 @@
 # (C) British Crown Copyright 2017-2025, Met Office.
 # Please see LICENSE.md for license details.
 
-"""Utilities for Met Office indexes"""
+"""Utilities for JASMIN indexes"""
 
 from __future__ import annotations
 
@@ -9,6 +9,7 @@ import functools
 import xarray as xr
 from pathlib import Path
 
+JOIN_LINK = "https://jasmin.ac.uk/"
 
 @functools.lru_cache()
 def cached_iterdir(path: Path) -> list[Path]:
@@ -59,3 +60,25 @@ def postprocess_dataset(ds: xr.Dataset) -> xr.Dataset:
         ds = ds.drop_vars(coords_to_drop)
 
     return ds
+
+def check_project(project_code: str, scratch: bool = False) -> bool:
+    """
+    Check project code data existance.
+    """
+
+    default_root_path = Path("/g/data/")
+    project_code = str(project_code)
+
+    if "/scratch" in project_code or scratch:
+        default_root_path = Path("/scratch/")
+
+    project_code = project_code.replace("/g/data/", "").replace("/scratch/", "").split("/")[0]
+
+    if not (default_root_path / project_code).exists():
+        raise FileNotFoundError(
+            f"Could not find data path for {project_code!r}."
+            "\nTherefore no data can be loaded from this index."
+            f"\nJoin this project at {JOIN_LINK.format(code = project_code)}"
+        )
+    return True
+
