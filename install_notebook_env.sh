@@ -18,11 +18,11 @@ python -m venv ~/venv/${ENV_NAME}
 
 #this script needs to run in the root directory of the pyearthtools repo
 
-cd ~/prog/pet_fork
+cd ~/PyEarthTools
 pip install -r requirements.txt
 
 #the next command need to run from the jasmin siter archive repo
-cd ~/prog/pyearthtools_jasmin
+cd ~/pyearthtools_jasmin
 pip install -e .
 
 # once the environment is setup, we need to "install" it so it is usable in a jupyter notebook
