@@ -24,8 +24,6 @@ from pyearthtools.data.archive import register_archive
 from pyearthtools.data.indexes import ArchiveIndex
 from pyearthtools.data.time import Petdt as petdt
 
-from site_archive_jasmin.utilities import check_project
-
 #: TODO: unused in this module - assumed to be used in tutorials.
 SINGLE_RADAR_VARIABLES = ["RAIN", "DBZH"]
 COMPOSITE_VARIABLES = ["prcp_crate"]
@@ -889,7 +887,6 @@ class Rainfields3(ArchiveIndex):
         Args:
             variables: Variables to retrieve
         """
-        check_project(project_code="rq0")
         self.variables = [variables] if isinstance(variables, str) else variables
 
         base_transform = pyearthtools.data.transforms.variables.Trim(variables)
