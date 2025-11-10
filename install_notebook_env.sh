@@ -16,16 +16,14 @@ export ENV_NAME=pet_dev_nb_cpu_jasmin
 python -m venv ~/venv/${ENV_NAME}
 .  ~/venv/${ENV_NAME}/bin/activate
 
-#this script needs to run in the root directory of the pyearthtools repo
-
+#the next command needs to run in the root directory of the pyearthtools repo. This will be the directory into which you cloned the PyEarthTools repository.
 cd ~/PyEarthTools
 pip install -r requirements.txt
 
-#the next command need to run from the jasmin siter archive repo
+#the next command need to run from the jasmin siter archive repo. This will be the directory into which you cloned the pyearthtools_jasmin repository.
 cd ~/pyearthtools_jasmin
 pip install -e .
 
 # once the environment is setup, we need to "install" it so it is usable in a jupyter notebook
 python -m ipykernel install --user --name ${ENV_NAME}
-
 
