@@ -1,3 +1,6 @@
+# (C) British Crown Copyright 2017-2026, Met Office.
+# Please see LICENSE.md for license details.
+
 import pathlib
 import datetime
 
@@ -10,6 +13,7 @@ from pyearthtools.data.exceptions import DataNotFoundError
 from pyearthtools.data.indexes import ArchiveIndex, FileSystemIndex, decorators
 from pyearthtools.data.transforms import Transform, TransformCollection
 from pyearthtools.data.archive import register_archive
+from pyearthtools.data.time import TimeDelta
 
 from site_archive_jasmin.utilities import (
     cached_exists,
@@ -48,8 +52,8 @@ class Ew4Imerg(ArchiveIndex):
     """PyEarthTools accessor to access the version of GPM IMERG prepared for the EW4Energy project"""
 
     imerg_fname_template = '3B-HHR-E.MS.MRG.3IMERG.{date_str}-S{start_time}-E{end_time}.{day_minutes:04d}.V07B.HDF5.SUB.nc4'
-    ew4_imerge_res = (30, "minute")
-    # ew4_imerge_res = (1, "hour")
+    # ew4_imerge_res = (30, "m")
+    ew4_imerge_res = (1, "hour")
     @property
     def _desc_(self):
         return {
@@ -96,7 +100,7 @@ class Ew4Imerg(ArchiveIndex):
         querytime: str | Petdt,
     ) -> pathlib.Path | dict[str, str ]:
 
-        paths = {}
+        paths = []
         querytime = Petdt(querytime)
         print(querytime)
         if querytime > Petdt(self._end) or querytime < Petdt(self._start):
@@ -106,25 +110,14 @@ class Ew4Imerg(ArchiveIndex):
 
         ew4_imerg_dir = pathlib.Path(self.ROOT_DIRECTORIES['ew4_imerg_precip'])
 
-        # num_files = int((self._end - self._start) / self._time_delta)
-        # timestamp_list = [self._start + (self._time_delta * time_ix) for time_ix in range(num_files) 
-        #                   if date_matches(self._start + (self._time_delta * time_ix), querytime)
-        #                  ]
-        # imerg_filelist = [ get_imerg_path(select_dt,
-        #                                   self._time_delta,
-        #                                   Ew4Imerg.imerg_fname_template,
-        #                                   ew4_imerg_dir
-        #                                  )
-        #                    for select_dt in timestamp_list ]
-
-        
-        paths['precipitation'] = get_imerg_path(querytime,
+      
+        paths += [get_imerg_path(querytime,
                                            self._time_delta,
                                            Ew4Imerg.imerg_fname_template,
                                            ew4_imerg_dir
-                                          )
-        import pdb
-        pdb.set_trace()
+                                          )]
+
+        print(paths)
 
         return paths
 
