@@ -74,8 +74,6 @@ class Ew4Imerg(ArchiveIndex):
         Doc string for init function
         """
 
-        print(start)
-        print(end)
         if type(start) is not datetime.datetime:
             self._start = datetime.datetime.fromisoformat(start)
         else:
@@ -102,7 +100,6 @@ class Ew4Imerg(ArchiveIndex):
 
         paths = []
         querytime = Petdt(querytime)
-        print(querytime)
         if querytime > Petdt(self._end) or querytime < Petdt(self._start):
             raise DataNotFoundError('Query time is outside the range of data')
         
@@ -116,8 +113,6 @@ class Ew4Imerg(ArchiveIndex):
                                            Ew4Imerg.imerg_fname_template,
                                            ew4_imerg_dir
                                           )]
-
-        print(paths)
 
         return paths
 
