@@ -11,8 +11,8 @@ Met Office specific Indexes
 | [MOUKV][site_archive_jasmin.MOUKV]       | Subset of Met Office UKV Analysis Data         |
 | [Himawari][site_archive_jasmin.Himawari]        | Himawari 8/9 satellite data                             |
 | [Rainfields3][site_archive_jasmin.Rainfields3] | Rainfields3 Australia-wide radar mosiac 2km^2 (Ausm310) |
-
-
+| [EW4IMERG][site_archive_jasmin.Ew4Imerg][EW4 IMERG Summer 2025] |
+| [EW4Merra2][site_archive_jasmin.Ew4Merra2][EW4 Merra2 Renalsysis Hourly Meteo and Aero data] |
 """
 
 import os
@@ -29,7 +29,13 @@ ROOT_DIRECTORIES = {
     "Himawari": "",
     "HimawariChannels": "",
     "Rainfields3": "",
+    "ew4_imerg_precip": "",
+    "ew4_merra2_meteo": "",
+    "ew4_merra2_aero": "",
+    "ew4_mtg_li": "",
+    "ew4_era5": "",
 }
+
 
 
 register_archive("ROOT_DIRECTORIES")(ROOT_DIRECTORIES)
@@ -41,6 +47,9 @@ from site_archive_jasmin.MOGLOBAL import MOGLOBAL  # noqa
 from site_archive_jasmin.MOUKV import MOUKV  # noqa
 from site_archive_jasmin.Himawari import Himawari, HimawariChannels  # noqa
 from site_archive_jasmin.Rainfields310 import Rainfields3  # noqa
+from site_archive_jasmin.ew4_imerg import Ew4Imerg  # noqa
+from site_archive_jasmin.ew4_reanalysis import Ew4Merra2Aero, Ew4Merra2Meteo, Ew4Era5
+from site_archive_jasmin.ew4_mtg_li import Ew4MtgLi
 
 register_archive("jasmin")(site_archive_jasmin)
 

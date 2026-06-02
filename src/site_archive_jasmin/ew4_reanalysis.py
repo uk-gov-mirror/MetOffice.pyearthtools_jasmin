@@ -105,8 +105,6 @@ class Ew4Merra2(ArchiveIndex):
         """
         self._variables = variables
         super_transforms = TransformCollection([pyearthtools.data.transforms.variables.Trim(self._variables),]) + transforms
-        import pdb
-        pdb.set_trace()
         
         # call the base class
         super().__init__(
@@ -199,9 +197,74 @@ class Ew4Merra2Meteo(Ew4Merra2):
         transforms_super =  TransformCollection([MeteoHourFix(),]) + transforms
         super().__init__(variables=filtered_vars,transforms=transforms_super)
 
+ERA5_VARS = [
+    'temperature',
+    'specific_humidity',
+    'u_component_of_wind',
+    'v_component_of_wind',
+    'geopotential',
+    'vertical_velocity',
+]
 
+def _filter_vars(variables, var_whitelist):
+    # check list of variables against valid ones
+    filtered_vars = [var1 for var1 in variables if var1 in var_whitelist]
         
-# @register_archive("ew4_imerg_2025", sample_kwargs=dict())
-# class (ArchiveIndex):
-#     def__init__(self):
-    
+    if len(filtered_vars) == 0:
+        raise DataError('Not valid variables selected')
+        
+    if len(filtered_vars) != len(variables):
+        print('The following variables were selected but are not present in the dataset and rejected:\n', 
+              '\n'.join(var1 for var1 in variables if var1 not in var_whitelist))
+    else:
+        print('All selected variables present in the dataset.')
+    return filtered_vars
+
+@register_archive("ew4_era5", sample_kwargs=dict(variable="temperature"))
+class Ew4Era5(ArchiveIndex):
+    """
+    Access for EW4 Energy subset of ERA5 for use with nowcasting.
+    """
+    era5_fname_template = 'era5_pl_{dt.year:04d}_{dt.month:02d}_{var_name}.nc'
+    template_interval = '1 hour'
+
+    @property
+    def _desc_(self):
+        return {
+            "singleline": "EW4 ERA5 Reanalsyis subset",
+            "range": "April to September 2025",
+            "Documentation": "https://confluence.ecmwf.int/display/CKB/ERA5%3A+data+documentation",
+        }
+
+    def __init__(
+        self,
+        variables: list[str] | str,
+        *,
+        transforms: Transform | TransformCollection | None = None,
+    ):
+        """
+        Doc string for init function
+        """
+
+        self._filtered_vars = _filter_vars(variables, ERA5_VARS)
+        self._data_dir = pathlib.Path(self.ROOT_DIRECTORIES['ew4_era5'])
+        
+        transforms_super = transforms 
+        super().__init__(
+            variables=self._filtered_vars,
+            transforms=transforms_super)
+        self.record_initialisation()
+
+    def filesystem(
+        self,
+        querytime: str | Petdt,
+    ) -> Path | dict[str, str | Path]:
+        
+
+        paths = []
+        querytime = Petdt(querytime)
+
+        for var1  in self._filtered_vars:
+            paths += [self._data_dir / Ew4Era5.era5_fname_template.format(dt=querytime, var_name=var1)]
+        
+        return paths
