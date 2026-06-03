@@ -1,0 +1,66 @@
+# (C) British Crown Copyright 2017-2026, Met Office.
+# Please see LICENSE.md for license details.
+
+import pathlib
+import argparse
+
+import xarray
+
+imerg_fname_template = '3B-HHR-E.MS.MRG.3IMERG.{date_str}-S{start_time}-E{end_time}.{day_minutes:04d}.V07B.HDF5.SUB.nc4'
+out_fname_template = 'ew4_imerg_{start_date_str}_{end_date_str}.nc'
+
+date_template = '{dt.year:04d}{dt.month:02d}{dt.day:02d}'
+
+def get_imerg_path(start_dt, time_delta, fname_template, data_dir):
+    day_minutes = start_dt.hour * 60 + start_dt.minute
+    date_str = '{dt.year:04d}{dt.month:02d}{dt.day:02d}'.format(dt=start_dt)
+    time_template = '{dt.hour:02d}{dt.minute:02d}{dt.second:02d}'
+    start_time = time_template.format(dt=start_dt)
+    end_time = time_template.format(dt=start_dt+time_delta-datetime.timedelta(seconds=1))
+    imerg_path = data_dir / fname_template.format(date_str=date_str,
+                                              start_time=start_time,
+                                              end_time=end_time,
+                                                  day_minutes=day_minutes,
+                                             )
+    return imerg_path
+
+def get_cmd_args():
+    parser = argparse.ArgumentParser(
+        prog='ew4_iimergg_data_prep',
+        description='transform EW4 imerg data to be more ML ready',
+    )
+    
+    parser.add_argument('--start-date', dest='start_date', type=lambda s1: datetime.datetime.strptime(s1,'%Y-%m-%d') )
+    parser.add_argument('--end-date', dest='end_date', type=lambda s1: datetime.datetime.strptime(s1,'%Y-%m-%d') )    
+    parser.add_argument('--ew4-dir', dest='ew4_dir' , type=pathlib.Path)
+    parser.add_argument('--out-dir', dest='out_dir' , type=pathlib.Path)
+
+    cmd_args = parser.parse_args()
+    return cmd_args
+
+
+def main():
+    cmd_args = get_cmd_args()
+date "    imerg_ew4_dir = cmd_args.ew4_dir
+    start_dt = cmd_args.start_date
+    end_dt =  cmd_args.end_date
+    time_delta=datetime.timedelta(minutes=30)
+    num_files = int((end_dt - start_dt) / time_delta)
+
+    imerg_filelist = [
+        get_imerg_path(start_dt + (time_delta * time_ix),
+                       time_delta,
+                       imerg_fname_template,
+                       imerg_ew4_dir
+                      )
+        for time_ix in range(num_files) ]
+    ew4_imerge_sample_ds = xarray.open_mfdataset(imerg_filelist)
+
+    out_path = cmd_args.out_dir / out_fname_template.format(start_date_str=date_template.format(dt=start_dt),
+                                                            end_date_str=date_template.format(dt=end_dt),
+                                                           )
+    ew4_imerge_sample_ds.to_netcdf(out_path)
+    print(f'writing data from {start_dt} to {end_dt} to {str(out_path)}')
+    
+if __name__ == '__main__':
+    main()
