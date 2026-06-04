@@ -6,4 +6,11 @@ MOUKV:      "/gws/nopw/j04/mohc_shared/dscop/mo_pet_site_archive/mo_ukv/"
 Himawari:  "/gws/nopw/j04/mohc_shared/mh_pet/rv74_himawari"
 HimawariChannels: "/gws/nopw/j04/mohc_shared/mh_pet/ra22_himawari"
 Rainfields3: "/gws/nopw/j04/mohc_shared/mh_pet/rq0Radar"
+CordexMLbench: "/gws/nopw/j04/mohc_shared/dscop/cordexbench"
 
+# EW4 group workspace paths
+ew4_mtg_li: "/gws/nopw/j04/ew4energy/MTG_LI/"
+ew4_imerg_precip: "/gws/nopw/j04/ew4energy/imerg_2025_summer"
+ew4_merra2_meteo: "/gws/nopw/j04/ew4energy/West_Africa_Merra-2_2015-2025_meteo"
+ew4_merra2_aero: "/gws/nopw/j04/ew4energy/West_Africa_Merra-2_2015-2025_aerosols/3d"
+ew4_era5: "/gws/nopw/j04/ew4energy/ERA5/tutorial_202606"
