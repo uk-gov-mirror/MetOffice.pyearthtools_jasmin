@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import argparse
 import pathlib
 import datetime
 import math
@@ -15,6 +16,12 @@ import pyearthtools.pipeline
 
 import torch
 
+def parse_cli_args():
+    parser = argparse.ArgumentParser(description="Train ERA5 autoencoder")
+    parser.add_argument("--batch-size", type=int, default=8, dest="batch_size")
+    parser.add_argument("--num-epochs", type=int, default=25, dest="num_epochs")
+    parser.add_argument("--learning-rate", type=float, default=5e-3, dest="learning_rate")
+    return parser.parse_args()
 
 def construct_pet_pipeline(region_extents):
     ew4_era5_accessor = pyearthtools.data.archive.ew4_era5(variables=['temperature','specific_humidity', 'vertical_velocity'])
@@ -152,21 +159,30 @@ def get_batch_tensors(batch_size, ds_iterator, device):
 
     return predictor_gpu_tensor, target_gpu_tensor
 
-
-def run_training_loop(ew4_era5_train_pipe, ew4_era5_val_pipe, era5_autoencoder, device):
+def run_training_loop(
+    ew4_era5_train_pipe,
+    ew4_era5_val_pipe,
+    era5_autoencoder,
+    device,
+    num_epochs,
+    batch_size,
+    learning_rate,
+):
 
     # Loss function and optimizer
     # loss_function = torch.nn.L1Loss()
     # criterion = nn.KLDivLoss()
     loss_function = torch.nn.MSELoss()
 
-    optimizer = torch.optim.Adam(era5_autoencoder.parameters(),
-                                 lr=5e-3)
+    optimizer = torch.optim.Adam(
+        era5_autoencoder.parameters(),
+        lr=learning_rate,
+    )
 
-    num_epochs = 25
     num_samples = len(ew4_era5_train_pipe)
-    batch_size = 8
     num_batches = math.ceil(num_samples / batch_size)
+
+
 
     for epoch_num in range(num_epochs):
         print(epoch_num)
@@ -206,6 +222,8 @@ def run_training_loop(ew4_era5_train_pipe, ew4_era5_val_pipe, era5_autoencoder, 
 
 
 def main():
+    args = parse_cli_args()
+
     select_dt = datetime.datetime(2025,5,11,15,0)
 
     ghana_extents = {
@@ -225,7 +243,17 @@ def main():
 
     era5_autoencoder = setup_ml_model(device, pipe_dict['train'])
 
-    loss_dict = run_training_loop(pipe_dict['train'], pipe_dict['val'], era5_autoencoder, device)
+    loss_dict = run_training_loop(
+        pipe_dict['train'],
+        pipe_dict['val'],
+        era5_autoencoder,
+        device,
+        num_epochs=args.num_epochs,
+        batch_size=args.batch_size,
+        learning_rate=args.learning_rate,
+    )
 
+    if __name__ == '__main__':
+        main()
 
 
