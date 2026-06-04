@@ -24,6 +24,7 @@ def parse_cli_args():
     return parser.parse_args()
 
 def construct_pet_pipeline(region_extents):
+    
     ew4_era5_accessor = pyearthtools.data.archive.ew4_era5(variables=['temperature','specific_humidity', 'vertical_velocity'])
 
     ew4_era5_prep = pyearthtools.pipeline.Pipeline(
@@ -44,7 +45,7 @@ def construct_pet_pipeline(region_extents):
         exceptions_to_ignore=pyearthtools.data.exceptions.DataNotFoundError,
     )
     val_range = pyearthtools.pipeline.Pipeline(
-        pyearthtools.pipeline.modifications.TemporalWindow(prior_indexes=[0,], posterior_indexes=[0,], timedelta=TimeDelta('1 hour')),
+        pyearthtools.pipeline.modifications.TemporalWindow(prior_indexes=[0,], posterior_indexes=[0,], timedelta=pyearthtools.data.TimeDelta('1 hour')),
         iterator=pyearthtools.pipeline.iterators.DateRange('20250701T00', '20250801T00', interval='1 hour'),
         exceptions_to_ignore=pyearthtools.data.exceptions.DataNotFoundError,
     )
@@ -253,7 +254,7 @@ def main():
         learning_rate=args.learning_rate,
     )
 
-    if __name__ == '__main__':
-        main()
+if __name__ == '__main__':
+    main()
 
 
