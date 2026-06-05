@@ -24,8 +24,13 @@ def parse_cli_args():
     return parser.parse_args()
 
 def construct_pet_pipeline(region_extents):
-    
-    ew4_era5_accessor = pyearthtools.data.archive.ew4_era5(variables=['temperature','specific_humidity', 'vertical_velocity'])
+    print('constructing pipeline')
+    ew4_era5_accessor = pyearthtools.data.archive.ew4_era5(
+        variables=['temperature','specific_humidity', 'vertical_velocity'],
+#        transforms=pyearthtools.data.transforms.TransformCollection([
+#            pyearthtools.data.transforms.coordinates.Drop(['number','expver']),
+#        ])
+    )
 
     ew4_era5_prep = pyearthtools.pipeline.Pipeline(
         ew4_era5_accessor,
@@ -34,7 +39,7 @@ def construct_pet_pipeline(region_extents):
     )
 
     ew4_era5_ml = pyearthtools.pipeline.Pipeline(
-        # pyearthtools.pipeline.operations.xarray.reshape.CoordinateFlatten(['pressure_level']),
+        pyearthtools.pipeline.operations.xarray.reshape.CoordinateFlatten(['pressure_level']),
         pyearthtools.pipeline.operations.xarray.conversion.ToNumpy(),
         pyearthtools.pipeline.operations.numpy.reshape.Rearrange('c t h w -> t c h w'), # channel time height width -> time channel height width
     )
@@ -55,6 +60,7 @@ def construct_pet_pipeline(region_extents):
 
     pipe_dict = {
         'accessor': ew4_era5_accessor,
+        'prep': ew4_era5_prep,
         'ml': ew4_era5_ml,
         'train_section': train_range,
         'val_section': val_range,
@@ -125,8 +131,10 @@ class ERA5AutoEncoder(torch.nn.Module):
         return reconstructed
 
 def setup_ml_model(device, sample_pipe):
+    print('constructing ML model')
     num_channels =  calc_num_channels(sample_pipe, device)
     era5_autoencoder = ERA5AutoEncoder(num_channels, False).to(device)
+    return era5_autoencoder
 
 def calc_num_channels(sample_pipe, device):
     sample_tensor = torch.tensor(next(iter(sample_pipe))[0][0], dtype=torch.float32).to(device)
@@ -169,7 +177,7 @@ def run_training_loop(
     batch_size,
     learning_rate,
 ):
-
+    print('running training loop.')
     # Loss function and optimizer
     # loss_function = torch.nn.L1Loss()
     # criterion = nn.KLDivLoss()
@@ -190,18 +198,19 @@ def run_training_loop(
         epoch_train_loss = 0.0
         epoch_val_loss = 0.0
 
-    era5_train_iter = iter(ew4_era5_train_pipe)
+        era5_train_iter = iter(ew4_era5_train_pipe)
 
-    for batch_ix in range(num_batches):
-        predictor_gpu_tensor, target_gpu_tensor = get_batch_tensors(batch_size, era5_train_iter, device)
-        if (batch_ix % 100) == 0:
-            print(batch_ix)
+        for batch_ix in range(num_batches):
+            predictor_gpu_tensor, target_gpu_tensor = get_batch_tensors(batch_size, era5_train_iter, device)
+            if (batch_ix % 100) == 0:
+                print(batch_ix)
             optimizer.zero_grad()
             predictions = era5_autoencoder.forward(predictor_gpu_tensor)
             loss_batch = loss_function(predictions, target_gpu_tensor)
             loss_batch.backward()
             optimizer.step()
             epoch_train_loss += loss_batch.to('cpu').item()
+            
         epoch_train_loss /= num_batches
 
         # calculate loss on validation data
@@ -211,7 +220,7 @@ def run_training_loop(
             val_target_tensor = torch.tensor(val_target[0], dtype=torch.float32).to(device)
             loss_batch_val = loss_function(predictions_val, val_target_tensor)
             epoch_val_loss += loss_batch_val.to('cpu').item()
-            epoch_val_loss /= len(ew4_era5_val_pipe)
+        epoch_val_loss /= len(ew4_era5_val_pipe)
         print(epoch_train_loss)
         print(epoch_val_loss)
 
