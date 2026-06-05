@@ -249,7 +249,7 @@ class Ew4Era5(ArchiveIndex):
         self._filtered_vars = _filter_vars(variables, ERA5_VARS)
         self._data_dir = pathlib.Path(self.ROOT_DIRECTORIES['ew4_era5'])
         
-        transforms_super = transforms 
+        transforms_super = TransformCollection([pyearthtools.data.transforms.coordinates.Drop(['number','expver'], ignore_missing=True),]) + transforms
         super().__init__(
             variables=self._filtered_vars,
             transforms=transforms_super)

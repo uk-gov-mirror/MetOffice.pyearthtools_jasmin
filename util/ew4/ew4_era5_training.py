@@ -220,7 +220,7 @@ def run_training_loop(
             val_target_tensor = torch.tensor(val_target[0], dtype=torch.float32).to(device)
             loss_batch_val = loss_function(predictions_val, val_target_tensor)
             epoch_val_loss += loss_batch_val.to('cpu').item()
-            epoch_val_loss /= len(ew4_era5_val_pipe)
+        epoch_val_loss /= len(ew4_era5_val_pipe)
         print(epoch_train_loss)
         print(epoch_val_loss)
 

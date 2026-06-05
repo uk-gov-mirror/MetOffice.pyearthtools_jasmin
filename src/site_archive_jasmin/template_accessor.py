@@ -10,12 +10,10 @@ from __future__ import annotations
 
 from pathlib import Path
 
-
 import pyearthtools.data
 
 from pyearthtools.data import Petdt
-from pyearthtools.data.exceptions import DataNotFoundError
-from pyearthtools.data.indexes import ArchiveIndex, decorators
+from pyearthtools.data.indexes import ArchiveIndex
 from pyearthtools.data.transforms import Transform, TransformCollection
 from pyearthtools.data.archive import register_archive
 
@@ -30,6 +28,8 @@ from site_archive_jasmin.utilities import (
 @register_archive("template_name", sample_kwargs=dict(variable="2t"))
 class TemplateAccessor(ArchiveIndex):
     """Description of dataset"""
+
+    template_interval = '1 hour'
 
     @property
     def _desc_(self):
@@ -54,7 +54,7 @@ class TemplateAccessor(ArchiveIndex):
         # call the base class
         super().__init__(
             transforms=base_transform + (transforms or TransformCollection()),
-            data_interval=ERA_RESOLUTION,
+            data_interval=TemplateAccesor.template_interval,
         )
         self.record_initialisation()
 
@@ -70,9 +70,3 @@ class TemplateAccessor(ArchiveIndex):
         # build a dictionary of filenames based on the parameters of this accessor to be used for loading
         
         return paths
-
-    # Do we need this?
-    @property
-    def _import(self):
-        """module to import when this class is used"""
-        return "pyearthtools.site_archive_met_office.TemplateAccessor"
